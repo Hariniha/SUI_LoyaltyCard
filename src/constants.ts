@@ -5,5 +5,5 @@
 
 // NFT Package IDs
 export const DEVNET_NFT_PACKAGE_ID = "0xTODO"; // Replace with your devnet package ID
-export const TESTNET_NFT_PACKAGE_ID = "0xbe47df4fbec1d79b42bee2c42315b376f1c6401da77becf250ee4eed97d2f5c9";
+export const TESTNET_NFT_PACKAGE_ID = "0x712951e06c76e4ab371ae7fa9524be05915f57bce2a1e4c981da8b4079c3d752";
 export const MAINNET_NFT_PACKAGE_ID = "0xTODO"; // Replace with your mainnet package ID
