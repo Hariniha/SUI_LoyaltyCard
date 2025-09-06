@@ -1,7 +1,5 @@
 import { useState, ChangeEvent } from 'react';
-import { useEffect } from 'react';
-import { useCurrentAccount } from '@mysten/dapp-kit';
-import { SuiClient } from '@mysten/sui.js/client';
+
 import { Transaction } from "@mysten/sui/transactions";
 import { Button, Container, Text, Heading, Box } from "@radix-ui/themes";
 import { useSignAndExecuteTransaction } from "@mysten/dapp-kit";
@@ -14,32 +12,10 @@ export function MintNFT() {
   // Feedback state for admin actions
   const [addPointsResult, setAddPointsResult] = useState<string>("");
   const [burnResult, setBurnResult] = useState<string>("");
-  // Loyalty NFT Listing
-  const [loyaltyNFTs, setLoyaltyNFTs] = useState<any[]>([]);
-  const [loadingNFTs, setLoadingNFTs] = useState(false);
-  const currentAccount = useCurrentAccount();
+  
 
-  async function fetchLoyaltyNFTs() {
-  if (!currentAccount || !currentAccount.address) return;
-    setLoadingNFTs(true);
-    try {
-  const client = new SuiClient({ url: 'https://fullnode.testnet.sui.io:443' }); // Change to mainnet URL if needed
-      const objects = await client.getOwnedObjects({ owner: currentAccount.address });
-      // Filter for Loyalty NFTs
-      const loyaltyObjects = objects.data.filter((obj: any) =>
-        obj.data?.type?.endsWith('nftdapp::Loyalty')
-      );
-      setLoyaltyNFTs(loyaltyObjects);
-    } catch (e) {
-      setLoyaltyNFTs([]);
-    }
-    setLoadingNFTs(false);
-  }
+  
 
-  // Fetch NFTs on mount and when account changes
-  useEffect(() => {
-    fetchLoyaltyNFTs();
-  }, [currentAccount?.address]);
   const nftPackageId = useNetworkVariable("nftPackageId");
   const [customerAddress, setCustomerAddress] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -125,8 +101,7 @@ export function MintNFT() {
       {
         onSuccess: async ({ digest }) => {
           setTxDigest(digest);
-          // Refresh Loyalty NFT list after mint
-          await fetchLoyaltyNFTs();
+        
         },
         onError: (error) => {
           console.error('MintNFT transaction error:', error);
@@ -152,7 +127,7 @@ export function MintNFT() {
         {
           onSuccess: async ({ digest }) => {
             setAddPointsResult(`Success! Transaction: ${digest}`);
-            await fetchLoyaltyNFTs();
+            
           },
           onError: (error) => {
             setAddPointsResult(`Error: ${error.message || error}`);
@@ -176,7 +151,7 @@ export function MintNFT() {
       {
         onSuccess: async ({ digest }) => {
           setRedeemResult(`Success! Transaction: ${digest}`);
-          await fetchLoyaltyNFTs();
+          
         },
         onError: (error) => {
           setRedeemResult(`Error: ${error.message || error}`);
@@ -200,7 +175,7 @@ export function MintNFT() {
         {
           onSuccess: async ({ digest }) => {
             setBurnResult(`Success! Transaction: ${digest}`);
-            await fetchLoyaltyNFTs();
+          
           },
           onError: (error) => {
             setBurnResult(`Error: ${error.message || error}`);
@@ -217,25 +192,7 @@ export function MintNFT() {
 
   return (
     <Container size="1" style={{ maxWidth: 500 }}>
-      {/* Loyalty NFT List */}
-      <Box style={{ marginBottom: '2rem', padding: '1rem', border: '1px solid #eee', borderRadius: '0.5rem' }}>
-        <Heading size="4" style={{ marginBottom: '1rem' }}>Your Loyalty NFTs</Heading>
-        {loadingNFTs ? (
-          <Text>Loading...</Text>
-        ) : loyaltyNFTs.length === 0 ? (
-          <Text>No Loyalty NFTs found.</Text>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {loyaltyNFTs.map((obj: any) => (
-              <Box key={obj.data.objectId} style={{ border: '1px solid #ccc', borderRadius: '0.5rem', padding: '1rem' }}>
-                <Text size="2" weight="bold">Object ID: {obj.data.objectId}</Text>
-                <Text size="2">Type: {obj.data.type}</Text>
-                {/* You can add more fields here if you fetch object details */}
-              </Box>
-            ))}
-          </div>
-        )}
-      </Box>
+    
       <Box style={{ 
         padding: '1.5rem', 
         borderRadius: '0.5rem', 
